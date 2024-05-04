@@ -21,7 +21,7 @@ pipeline {
             
             sh "docker build -t nginx-server:${env.dockerTag} ."
             
-            withCredentials([file(credentialsId: 'gcr-id', variable: 'SERVICE_ACCOUNT_KEY')]) {
+            withCredentials([file(credentialsId: 'ServiceAccount_credentiels', variable: 'SERVICE_ACCOUNT_KEY')]) {
               sh 'gcloud auth activate-service-account --key-file=$SERVICE_ACCOUNT_KEY'
               sh "gcloud container clusters get-credentials ${env.gkeClusterName} --zone ${env.Zone} --project ${env.gkeProject}"
               sh "gcloud auth configure-docker"
