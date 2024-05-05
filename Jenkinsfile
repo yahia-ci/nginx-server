@@ -35,22 +35,19 @@ pipeline {
       }
     }
 
-    stage('Create Namespace') {
-      steps {
-        container("gcloud-builder") {
-          script {
-            // Create the namespace if it doesn't already exist
-            sh "kubectl create namespace nginx-server --dry-run=client -o yaml | kubectl apply -f -"
-          }
-        }
-      }
-    }
-
     stage('Deploy to GKE') {
       steps {
         container("gcloud-builder") {
           script {
-            sh "kubectl set image deployment/nginx-server nginx-server=${env.gcrImage} -n nginx-server"
+            // Check if deployment exists
+            def deploymentExists = sh(returnStatus: true, script: "kubectl get deployment nginx-server -n nginx-server")
+            if (deploymentExists != 0) {
+              // If deployment doesn't exist, create it
+              sh "kubectl create deployment nginx-server --image=${env.gcrImage} -n nginx-server"
+            } else {
+              // If deployment exists, update its image
+              sh "kubectl set image deployment/nginx-server nginx-server=${env.gcrImage} -n nginx-server"
+            }
           }
         }
       }
