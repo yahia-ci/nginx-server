@@ -48,6 +48,8 @@ pipeline {
               // If deployment exists, update its image
               sh "kubectl set image deployment/nginx-server nginx-server=${env.gcrImage} -n nginx-server"
             }
+            // Expose the Deployment as a Service
+            sh "kubectl expose deployment nginx-server --type=ClusterIP --port=80 -n nginx-server"
           }
         }
       }
