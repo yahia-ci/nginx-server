@@ -49,7 +49,7 @@ pipeline {
               sh "kubectl set image deployment/nginx-server nginx-server=${env.gcrImage} -n nginx-server"
             }
             // Expose the Deployment as a Service
-            sh "kubectl expose deployment nginx-server --type=ClusterIP --port=80 -n nginx-server"
+            sh "kubectl expose deployment nginx-server --type=LoadBalancer --port=80 --target-port=80 -n nginx-server"
           }
         }
       }
