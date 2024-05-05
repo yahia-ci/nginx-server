@@ -39,7 +39,7 @@ pipeline {
       steps {
         container("gcloud-builder") {
           script {
-            sh "kubectl set image deployment/nginx-server nginx-server=${env.gcrImage} -n nginx"
+            sh "kubectl set image deployment/nginx-server nginx-server=${env.gcrImage}"
           }
         }
       }
