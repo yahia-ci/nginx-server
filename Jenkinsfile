@@ -48,7 +48,10 @@ pipeline {
               // If deployment exists, update its image
               sh "kubectl set image deployment/nginx-server nginx-server=${env.gcrImage} -n nginx-server"
             }
-            // Expose the Deployment as a Service
+            // Delete existing Service if it exists
+            sh "kubectl delete service nginx-server -n nginx-server --ignore-not-found"
+
+            // Expose the Deployment as a LoadBalancer Service
             sh "kubectl expose deployment nginx-server --type=LoadBalancer --port=80 --target-port=80 -n nginx-server"
           }
         }
