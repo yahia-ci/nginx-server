@@ -35,6 +35,17 @@ pipeline {
       }
     }
 
+    stage('Create Namespace') {
+      steps {
+        container("gcloud-builder") {
+          script {
+            // Create the namespace if it doesn't already exist
+            sh "kubectl create namespace nginx-server --dry-run=client -o yaml | kubectl apply -f -"
+          }
+        }
+      }
+    }
+
     stage('Deploy to GKE') {
       steps {
         container("gcloud-builder") {
